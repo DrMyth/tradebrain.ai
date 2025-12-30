@@ -10,6 +10,7 @@ import {
     CandlestickSeries,
     LineSeries,
 } from "lightweight-charts";
+import { Time } from "lightweight-charts";
 
 /* ---------------- TYPES ---------------- */
 
@@ -118,7 +119,7 @@ const TradeChart: React.FC<Props> = ({
             width: containerRef.current.clientWidth,
             height,
             layout: {
-                backgroundColor: "transparent",
+                background: { color: "transparent" },
                 textColor: "#A1A1AA", // zinc-400
             },
             grid: {
@@ -174,7 +175,7 @@ const TradeChart: React.FC<Props> = ({
         if (!chartReady || !chartRef.current || !candleSeriesRef.current) return;
 
         // clear old zones
-        Object.values(zonesRef.current).forEach((arr) => arr.forEach((z) => z.remove()));
+        Object.values(zonesRef.current).forEach((arr) => arr.forEach((z) => chartRef.current?.removeSeries(z)));
         zonesRef.current = {};
 
         const markers: any[] = [];
@@ -204,7 +205,7 @@ const TradeChart: React.FC<Props> = ({
                 });
 
                 const zones = addTradeZone(
-                    chartRef.current,
+                    chartRef.current!,
                     entryTs,
                     exitTs,
                     t.entryPrice,
@@ -232,15 +233,15 @@ const TradeChart: React.FC<Props> = ({
         const from = toUnixSeconds(t.entryTime) - 3600 * 6;
         const to = toUnixSeconds(t.exitTime) + 3600 * 6;
 
-        chartRef.current.timeScale().setVisibleRange({ from, to });
+        chartRef.current.timeScale().setVisibleRange({ from: from as Time, to: to as Time });
 
         chartRef.current.applyOptions({
-            layout: { backgroundColor: "#0A0A0A" },
+            layout: { background: { color: "#0A0A0A" } },
         });
 
         return () => {
             chartRef.current?.applyOptions({
-                layout: { backgroundColor: "transparent" },
+                layout: { background: { color: "transparent" } },
             });
         };
     }, [playIndex, chartReady]);
