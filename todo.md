@@ -1,0 +1,1 @@
+- Remove the default scroll bar and add custom scroll bar on edit and add new trade pages
